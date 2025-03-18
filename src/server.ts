@@ -1,11 +1,17 @@
 import fastify from "fastify";
+import { knex } from "./database";
+import { randomUUID } from "node:crypto";
 
 const app = fastify();
 
-app.get("/hello", () => "Hello World!");
+app.get("/hello", async () => {
+    const transactions = await knex("transactions")
+        .where("amount", 1000)
+        .select("*");
 
-app
-  .listen({
+    return transactions;
+});
+
+app.listen({
     port: 3333,
-  })
-  .then(() => console.log("HTTP SERVER RUNNING..."));
+}).then(() => console.log("HTTP SERVER RUNNING..."));
