@@ -1,17 +1,14 @@
 import fastify from "fastify";
-import { knex } from "./database";
-import { randomUUID } from "node:crypto";
+import { transactionsRoutes } from "./routes/transactions";
+import fastifyCookie from "@fastify/cookie";
 
 const app = fastify();
 
-app.get("/hello", async () => {
-    const transactions = await knex("transactions")
-        .where("amount", 1000)
-        .select("*");
+app.register(fastifyCookie);
+app.register(transactionsRoutes, { prefix: "transactions" });
 
-    return transactions;
-});
-
-app.listen({
+app
+  .listen({
     port: 3333,
-}).then(() => console.log("HTTP SERVER RUNNING..."));
+  })
+  .then(() => console.log("HTTP SERVER RUNNING..."));
